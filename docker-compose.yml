@@ -1,0 +1,23 @@
+version: "3.7"
+
+volumes:
+  db-data:
+
+services:
+  db:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_DB: abcabc
+      POSTGRES_PASSWORD: abcabc
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./ops/db-backups:/backup
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
