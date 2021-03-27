@@ -1,6 +1,6 @@
 const Discord = require('discord.js'); 
 const bot = new Discord.Client();
-const {addUsersIfNotExist, getAllUsersFromGuild, getAllPidorsFromGuild, deleteAllPidorsFromGuild, addPidorIfNotExist, getTopUsersFromGuild} = require('./epicdb.js');
+const {addUsersIfNotExist, getAllUsersFromGuild, getAllPidorsFromGuild, deleteAllPidorsFromGuild, addPidorIfNotExist, getTopUsersFromGuild} = require('./db/epicdb.js');
 const funcs = require ('./funcs.js');
 require('dotenv').config()
 

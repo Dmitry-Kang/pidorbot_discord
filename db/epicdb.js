@@ -1,4 +1,7 @@
-const {Sequelize, DataTypes, Model, QueryTypes} = require("sequelize");
+const {Sequelize, DataTypes, Model, QueryTypes} = require("sequelize")
+const user_create = require('./models/User')
+const temp_user_create = require('./models/Temp_user')
+const pidor_create = require('./models/Pidor')
 require('dotenv').config()
 let sequelize
 
@@ -21,113 +24,21 @@ if (process.env.DATABASE_URL) {
 }
 
 
-try_connection = async () =>  {
+try_connection =() => {
     try {
-        await sequelize.authenticate();
-        console.log('Запустилось БэДэшка, ебать');
-        return true;
+        sequelize.authenticate()
+        console.log('Соединение с БД установлено')
+        return true
     } catch (error) {
-        console.error('ОПА! БД наебнулось, ебать: ', error);
-        return false;
+        console.error('Проблема с соединением с БД: ', error)
+        return false
     }
 }
-try_connection();
+try_connection()
 
-class User extends Model {}
-
-    User.init({
-    server_id: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-    },
-    user_id: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-    },
-    hours: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: sequelize.literal('NOW()')
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: sequelize.literal('NOW()')
-    },
-    },
-     {
-        indexes: [
-            {
-                unique: true,
-                fields: ['user_id', 'server_id']
-            }
-        ],
-        sequelize, 
-        modelName: 'user'
-    }); 
-  User.sync({ alter: true });
-
-console.log(User === sequelize.models.User);
-
-class Pidor extends Model {}
-
-    Pidor.init({
-        server_id: {
-            type: DataTypes.BIGINT,
-            allowNull: false
-        },
-        user_id: {
-            type: DataTypes.BIGINT,
-            allowNull: false
-        }
-    }, {
-        sequelize, 
-        modelName: 'pidor'
-    }); 
-    Pidor.sync({ alter: true });
-
-console.log(Pidor === sequelize.models.Pidor);
-
-class Temp_user extends Model {}
-
-    Temp_user.init({
-    server_id: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-    },
-    user_id: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-    },
-    hours: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: sequelize.literal('NOW()')
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: sequelize.literal('NOW()')
-    },
-    }, {
-        indexes: [
-            {
-                unique: true,
-                fields: ['user_id', 'server_id']
-            }
-        ],
-        sequelize, 
-        modelName: 'temp_user'
-    }); 
-    Temp_user.sync({ alter: true });
-
-console.log(Temp_user === sequelize.models.Temp_user);
+let User = user_create(sequelize)
+let Pidor = pidor_create(sequelize)
+let Temp_user = temp_user_create(sequelize)
 
 async function addUsersIfNotExist(users) {
     try {
@@ -225,5 +136,5 @@ async function addPidorIfNotExist(pidor) {
     return true;
 }
 
-module.exports = {addUsersIfNotExist, getAllUsersFromGuild, updateUserTime, getTopUsersFromGuild, 
+module.exports = {sequelize, addUsersIfNotExist, getAllUsersFromGuild, updateUserTime, getTopUsersFromGuild, 
                   getAllPidorsFromGuild, addPidorIfNotExist, deleteAllPidorsFromGuild}

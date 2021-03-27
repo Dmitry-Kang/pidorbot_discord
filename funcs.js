@@ -1,6 +1,6 @@
-let {users} = require('./epicdb.js');
+let {users} = require('./db/epicdb.js');
 let constants = require('./constants.json'); 
-const {deleteAllPidorsFromGuild, getAllPidorsFromGuild, addPidorIfNotExist, getAllUsersFromGuild, updateUserTime} = require('./epicdb.js');
+const {deleteAllPidorsFromGuild, getAllPidorsFromGuild, addPidorIfNotExist, getAllUsersFromGuild, updateUserTime} = require('./db/epicdb.js');
 
 async function findUsers(guild) {
     let res = [];
