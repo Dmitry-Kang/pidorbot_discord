@@ -75,6 +75,16 @@ async function setPidor(serverId, userId, role) {
   const res = await addPidorIfNotExist({server_id: serverId, user_id: userId});
 }
 
+function checkRole(msg) {
+  if (msg.member.permissions.has(["ADMINISTRATOR"])) {
+    return "admin"
+  }
+  if (msg.member.roles.cache.find(role => role.name === "Пидор")) {
+    return "pidor"
+  }
+  return "user"
+}
+
  function toQuoteString(str) {
   return ">>> " + str;
 }
@@ -106,9 +116,15 @@ function getRandomTopPidorLeader() {
 function getRandomWrongCommand() {
   return constants.wrongCommand[Math.round(Math.random()*(constants.wrongCommand.length-1))];
 }
+function getRandomNotAdmin() {
+  return constants.notAdmin[Math.round(Math.random()*(constants.notAdmin.length-1))];
+}
+function getRandomNotPidor() {
+  return constants.notPidor[Math.round(Math.random()*(constants.notPidor.length-1))];
+}
 
 
   module.exports = {findUsers, deleteAllPidors, uptatePidorTime,
                     toQuoteString, toSpoilerString, toCodeString, toBoldString,
                     getRandomWhoPidorLeft, getRandomWhoPidorRight, getRandomTopPidorTop, getRandomTopPidorLeader, getRandomWrongCommand,
-                    markUser};
+                    markUser, checkRole, getRandomNotAdmin, getRandomNotPidor};
