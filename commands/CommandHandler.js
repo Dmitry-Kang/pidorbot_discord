@@ -1,5 +1,7 @@
-const { User } = require('discord.js');
-const funcs = require ('../funcs.js');
+const { User } = require('discord.js')
+const funcs = require ('../funcs.js')
+
+// Сообщению подаются сюда и для них ищется команда которую нужно выполнить
 
 class CommandHandler {
     constructor() {
@@ -25,8 +27,8 @@ class CommandHandler {
                 found = true
                 let user_role = funcs.checkRole(this.msg)
                 console.log("role = " + user_role)
-                if (handler['role'] != "any") {
-                    if (handler['role'] === "admin" && user_role != "admin") {
+                if (handler.role != "any") {
+                    if (handler.role === "admin" && user_role != "admin") {
                         msg.channel.send(funcs.toBoldString(funcs.getRandomNotAdmin()))
                         return
                     }
@@ -35,7 +37,7 @@ class CommandHandler {
                         return
                     }
                 }
-                let res = handler['function']({msg: this.msg, args: this.args})
+                let res = handler.func({msg: this.msg, args: this.args})
                 return
             }
         })

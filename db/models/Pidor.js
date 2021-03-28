@@ -1,4 +1,4 @@
-const {DataTypes, Model} = require("sequelize");
+const {DataTypes, Model} = require("sequelize")
 
 module.exports = function(sequelize) {
     class Pidor extends Model {}

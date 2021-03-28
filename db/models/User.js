@@ -1,4 +1,4 @@
-const {DataTypes, Model} = require("sequelize");
+const {DataTypes, Model} = require("sequelize")
 
 module.exports = function (sequelize) {
     class User extends Model {}
@@ -35,8 +35,8 @@ module.exports = function (sequelize) {
         ],
         sequelize, 
         modelName: 'user'
-    }); 
+    })
     User.sync({ alter: true })
 
-    return User;
+    return User
 }
