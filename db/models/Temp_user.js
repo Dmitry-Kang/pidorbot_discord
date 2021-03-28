@@ -1,41 +1,68 @@
 const {DataTypes, Model} = require("sequelize")
 
-module.exports = function(sequelize) {
-    class Temp_user extends Model {}
+class Temp_user {
+    constructor(sequelize) {
+        this.sequelize = sequelize
 
-    Temp_user.init({
-    server_id: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-    },
-    user_id: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-    },
-    hours: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: sequelize.literal('NOW()')
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: sequelize.literal('NOW()')
-    },
-    }, {
-        indexes: [
-            {
-                unique: true,
-                fields: ['user_id', 'server_id']
-            }
-        ],
-        sequelize, 
-        modelName: 'temp_user'
-    })
-    Temp_user.sync({ alter: true })
+        class Temp extends Model {}
+        Temp.init({
+        server_id: {
+            type: DataTypes.BIGINT,
+            allowNull: false
+        },
+        user_id: {
+            type: DataTypes.BIGINT,
+            allowNull: false
+        },
+        hours: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: sequelize.literal('NOW()')
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: sequelize.literal('NOW()')
+        },
+        }, {
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['user_id', 'server_id']
+                }
+            ],
+            sequelize, 
+            modelName: 'temp_user'
+        })
+        Temp.sync({ alter: true })
 
-    return Temp_user
+        this.temp = Temp
+    }
+
+    async addUsersIfNotExist(users) {
+        try {
+            await this.temp.bulkCreate( users ).then(async ()=>  {
+                const res = await this.sequelize.query("SELECT (user_id, server_id) FROM temp_users EXCEPT SELECT (user_id, server_id) FROM users")
+                await this.temp.destroy({
+                    where: {},
+                    truncate: true
+                })
+                console.log("res", JSON.stringify(res[0]))
+                let arr = []
+                await res[0].forEach(item => {
+                    arr.push(item.row)
+                })
+                console.log("arr ", arr.join(","))
+                await this.sequelize.query("INSERT INTO users (user_id, server_id) VALUES " + arr.join(","))
+            })
+        } catch(e) {
+            console.log("err1", e)
+        }
+        return true
+    }
 }
+
+module.exports = Temp_user

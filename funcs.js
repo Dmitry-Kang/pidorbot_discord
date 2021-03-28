@@ -1,6 +1,5 @@
-let {users} = require('./db/epicdb.js')
-let constants = require('./constants.json')
-const {deleteAllPidorsFromGuild, getAllPidorsFromGuild, addPidorIfNotExist, getAllUsersFromGuild, updateUserTime} = require('./db/epicdb.js')
+const epicdb = require('./db/epicdb.js')
+const constants = require('./constants.json')
 
 // Вспомогательные функции для команд
 
@@ -18,7 +17,7 @@ async function findUsers(guild) {
 async function deleteAllPidors(guild) {
   const role = guild.roles.cache.find(role => role.name === "Пидор")
   //console.log("role", role)
-  const cur_users = await getAllUsersFromGuild(guild.id)
+  const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
   
   for (key of cur_users) {
       const usr = guild.members.cache.get(key.dataValues.user_id)
@@ -29,8 +28,8 @@ async function deleteAllPidors(guild) {
 
 async function uptateTimings(guild) {
   const now = Date.now()
-  const pidors = await getAllPidorsFromGuild(guild.id)
-  const cur_users = await getAllUsersFromGuild(guild.id)
+  const pidors = await epicdb.pidor.getAllPidorsFromGuild(guild.id)
+  const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
   console.log("Pidors",JSON.stringify(pidors))
   console.log("cur users", JSON.stringify(cur_users))
 
@@ -40,7 +39,7 @@ async function uptateTimings(guild) {
         const pidorUpdatedDate = new Date(pidor.createdAt)
         const timeToPut = now - pidorUpdatedDate
         //console.log(timeToPut)
-        updateUserTime(guild.id, user.user_id, user.hours + timeToPut)
+        epicdb.user.updateUserTime(guild.id, user.user_id, user.hours + timeToPut)
       }
     })
   })
@@ -48,8 +47,8 @@ async function uptateTimings(guild) {
 
 async function uptatePidorTime(guild) {
   const now = Date.now()
-  const pidors = await getAllPidorsFromGuild(guild.id)
-  const cur_users = await getAllUsersFromGuild(guild.id)
+  const pidors = await epicdb.pidor.getAllPidorsFromGuild(guild.id)
+  const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
   console.log("Pidors",JSON.stringify(pidors))
   console.log("cur users", JSON.stringify(cur_users))
 
@@ -59,7 +58,7 @@ async function uptatePidorTime(guild) {
         const pidorUpdatedDate = new Date(pidor.createdAt)
         const timeToPut = now - pidorUpdatedDate
         //console.log(timeToPut)
-        updateUserTime(guild.id, user.user_id, user.hours + timeToPut)
+        epicdb.user.updateUserTime(guild.id, user.user_id, user.hours + timeToPut)
       }
     })
   })
@@ -67,14 +66,14 @@ async function uptatePidorTime(guild) {
 
 async function setPidor(serverId, userId, role) {
   // ищем всех пидоров в гильдии и снимаем им роль
-  const pidors = await getAllPidorsFromGuild(server_id)
+  const pidors = await epicdb.pidor.getAllPidorsFromGuild(server_id)
   for (key of pidors) {
     pidors[key].roles.remove(role)
   }
-  await deleteAllPidorsFromGuild(server_id)
+  await epicdb.pidor.deleteAllPidorsFromGuild(server_id)
 
   // добавляем пидора и даём ему роль
-  const res = await addPidorIfNotExist({server_id: serverId, user_id: userId})
+  const res = await epicdb.pidor.addPidorIfNotExist({server_id: serverId, user_id: userId})
 }
 
 function checkRole(msg) {

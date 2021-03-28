@@ -11,11 +11,11 @@ class Who extends Command {
         let msg = src['msg']
         const guild = msg.guild
         const users = await this.funcs.findUsers(guild)
-        this.epicdb.addUsersIfNotExist(users)
+        this.epicdb.temp_user.addUsersIfNotExist(users)
     
         const role = msg.guild.roles.cache.find(role => role.name === "Пидор")
     
-        const cur_users = await this.epicdb.getAllUsersFromGuild(guild.id)
+        const cur_users = await this.epicdb.user.getAllUsersFromGuild(guild.id)
         let index = Math.round(Math.random()*100) % cur_users.length
         const user = guild.members.cache.get(cur_users[index].dataValues.user_id)
         msg.channel.send(this.funcs.toQuoteString(this.funcs.toBoldString(this.funcs.getRandomWhoPidorLeft() + " " + this.funcs.markUser(user.id) + " " + this.funcs.getRandomWhoPidorRight())))
@@ -23,10 +23,10 @@ class Who extends Command {
         // ищем всех пидоров в гильдии и снимаем им роль
         await this.funcs.uptatePidorTime(guild)
         await this.funcs.deleteAllPidors(guild)
-        await this.epicdb.deleteAllPidorsFromGuild(guild.id)
+        await this.epicdb.pidor.deleteAllPidorsFromGuild(guild.id)
     
         // добавляем пидора и даём ему роль
-        const res = await this.epicdb.addPidorIfNotExist({server_id: guild.id, user_id: user.id})
+        const res = await this.epicdb.pidor.addPidorIfNotExist({server_id: guild.id, user_id: user.id})
         guild.members.cache.get(user.id).roles.add(role)
     }
 }

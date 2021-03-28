@@ -1,4 +1,3 @@
-const { User } = require('discord.js')
 const funcs = require ('../funcs.js')
 
 // Сообщению подаются сюда и для них ищется команда которую нужно выполнить

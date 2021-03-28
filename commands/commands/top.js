@@ -14,9 +14,9 @@ class Who extends Command {
         let arr = []
         let res = ''
         let t = 1
-        const top_users = await this.epicdb.getTopUsersFromGuild(guild.id)
+        const top_users = await this.epicdb.user.getTopUsersFromGuild(guild.id)
         
-        const pidors = await this.epicdb.getAllPidorsFromGuild(guild.id)
+        const pidors = await this.epicdb.pidor.getAllPidorsFromGuild(guild.id)
 
         top_users.forEach(user => {
             pidors.forEach(pidor => {
