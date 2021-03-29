@@ -47,27 +47,25 @@ class Temp_user {
     // Выходные данные true,false
     async addUsersIfNotExist(users) {
         try {
-            await this.temp.bulkCreate( users ).then(async ()=>  {
-                const res = await this.sequelize.query("SELECT (user_id, server_id) FROM temp_users EXCEPT SELECT (user_id, server_id) FROM users")
-                await this.temp.destroy({
-                    where: {},
-                    truncate: true
-                })
-                // console.log("res", JSON.stringify(res[0]))
-                let arr = []
-                await res[0].forEach(item => {
-                    arr.push(item.row)
-                })
-                if (arr.length > 0) {
-                    await this.sequelize.query("INSERT INTO users (user_id, server_id) VALUES " + arr.join(","))
-                }
+            await this.temp.bulkCreate( users )
+            const res = await this.sequelize.query("SELECT (user_id, server_id) FROM temp_users EXCEPT SELECT (user_id, server_id) FROM users")
+            await this.temp.destroy({
+                where: {},
+                truncate: true
             })
+            let arr = []
+            await res[0].forEach(item => {
+                arr.push(item.row)
+            })
+            if (arr.length > 0) {
+                await this.sequelize.query("INSERT INTO users (user_id, server_id) VALUES " + arr.join(","))
+                this.sequelize
+            }
             return true
         } catch(e) {
             console.error(e)
             return false
         }
-        
     }
 }
 

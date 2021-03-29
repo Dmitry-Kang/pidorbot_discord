@@ -15,7 +15,7 @@ class Who extends Command {
         users.forEach(usr => {
             arr.push({user_id: usr.id, server_id: guild.id})
         })
-        this.epicdb.temp_user.addUsersIfNotExist(arr)
+        await this.epicdb.temp_user.addUsersIfNotExist(arr)
     
         const role = msg.guild.roles.cache.find(role => role.name === "Пидор")
     
@@ -27,7 +27,6 @@ class Who extends Command {
         // ищем всех пидоров в гильдии и снимаем им роль
         await this.funcs.uptatePidorTime(guild)
         await this.funcs.deleteAllPidors(guild)
-        await this.epicdb.pidor.deleteAllPidorsFromGuild(guild.id)
     
         // добавляем пидора и даём ему роль
         const res = await this.epicdb.pidor.addPidorIfNotExist({server_id: guild.id, user_id: user.id})

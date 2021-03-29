@@ -26,6 +26,7 @@ async function deleteAllPidors(guild) {
     //console.log("usr", usr)
     usr.roles.remove(role)
   })
+  await epicdb.pidor.deleteAllPidorsFromGuild(guild.id)
 }
 
 // обновляет время пидорам гильдии
