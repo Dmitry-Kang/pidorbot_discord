@@ -120,6 +120,22 @@ const {DataTypes, Model} = require("sequelize")
                 return []
             }
         }
+
+        // Выводит юзера по гильдии и айди юзера
+        async getUser(guild_id, user_id) {
+            try {
+                const a = await this.temp.findOne({
+                    where: {
+                        server_id: guild_id,
+                        user_id: user_id
+                    }
+                })
+                return a.dataValues
+            } catch(e) {
+                console.error(e)
+                return null
+            }
+        }
     }
 
 module.exports = User
