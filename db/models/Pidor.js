@@ -23,36 +23,52 @@ class Pidor {
         this.temp = Temp
     }
 
+    // Ищет пидора по id(string) гильдии
+    // Возвращает id юзера - пидора
     async getAllPidorsFromGuild(id) {
         try {
             const a = await this.temp.findAll({where: {
                 server_id: id
               }})
-            return a
+            let res = []
+            a.forEach(element => {
+                res.push(element.dataValues)
+            })
+            return res
         } catch(e) {
-            console.log("err3")
+            console.error(e)
+            return []
         }
     }
 
+    // Удаляет всех пидоров из id(string) гильдии
     async deleteAllPidorsFromGuild(id) {
         try {
             const a = await this.temp.destroy({where: {
                 server_id: id
               }})
-            return a
+            if (a.length > 0) {
+                return true
+            }
+            return false
         } catch(e) {
-            console.log("err4")
+            console.error(e)
+            return false
         }
     }
 
+    // Добавляет пидора
+    // Входные данные {server_id, user_id}
+    // Выходные данные true, false
     async addPidorIfNotExist(pidor) {
         try {
             const a = await this.temp.create( pidor )
-            //console.log(a)
+            // console.log("create pidor = ",a)
+            return true
         } catch(e) {
-            console.log("err5")
+            console.error(e)
+            return false
         }
-        return true
     }
 }
 

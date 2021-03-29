@@ -3,78 +3,61 @@ const constants = require('./constants.json')
 
 // Вспомогательные функции для команд
 
+// Выводит всех пользователей гильдии
+// Входные данные guild(Guild)
+// Выходные данные [GuildMember]
 async function findUsers(guild) {
     let res = []
     const members = await guild.members.fetch()
     const arr = members.array().filter((member) => !member.user.bot)
     for (key in arr) {
-        res.push({user_id: arr[key].user.id, server_id: guild.id})
+        res.push(arr[key])
     }
-    
     return res
 }
 
+// Удаляет всех пидоров в данной гильдии
 async function deleteAllPidors(guild) {
   const role = guild.roles.cache.find(role => role.name === "Пидор")
   //console.log("role", role)
   const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
-  
-  for (key of cur_users) {
-      const usr = guild.members.cache.get(key.dataValues.user_id)
-      //console.log("usr", usr)
-      usr.roles.remove(role)
-  }
-}
-
-async function uptateTimings(guild) {
-  const now = Date.now()
-  const pidors = await epicdb.pidor.getAllPidorsFromGuild(guild.id)
-  const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
-  console.log("Pidors",JSON.stringify(pidors))
-  console.log("cur users", JSON.stringify(cur_users))
-
-  pidors.forEach(pidor => {
-    cur_users.forEach(user => {
-      if (pidor.user_id === user.user_id) {
-        const pidorUpdatedDate = new Date(pidor.createdAt)
-        const timeToPut = now - pidorUpdatedDate
-        //console.log(timeToPut)
-        epicdb.user.updateUserTime(guild.id, user.user_id, user.hours + timeToPut)
-      }
-    })
+  cur_users.forEach(user => {
+    const usr = guild.members.cache.get(user.user_id)
+    //console.log("usr", usr)
+    usr.roles.remove(role)
   })
 }
 
+// обновляет время пидорам гильдии
 async function uptatePidorTime(guild) {
   const now = Date.now()
   const pidors = await epicdb.pidor.getAllPidorsFromGuild(guild.id)
   const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
-  console.log("Pidors",JSON.stringify(pidors))
-  console.log("cur users", JSON.stringify(cur_users))
+  // console.log("Pidors", pidors)
+  // console.log("cur users", JSON.stringify(cur_users))
 
   pidors.forEach(pidor => {
     cur_users.forEach(user => {
       if (pidor.user_id === user.user_id) {
         const pidorUpdatedDate = new Date(pidor.createdAt)
         const timeToPut = now - pidorUpdatedDate
-        //console.log(timeToPut)
         epicdb.user.updateUserTime(guild.id, user.user_id, user.hours + timeToPut)
       }
     })
   })
 }
 
-async function setPidor(serverId, userId, role) {
-  // ищем всех пидоров в гильдии и снимаем им роль
-  const pidors = await epicdb.pidor.getAllPidorsFromGuild(server_id)
-  for (key of pidors) {
-    pidors[key].roles.remove(role)
-  }
-  await epicdb.pidor.deleteAllPidorsFromGuild(server_id)
+// async function setPidor(serverId, userId, role) {
+//   // ищем всех пидоров в гильдии и снимаем им роль
+//   const pidors = await epicdb.pidor.getAllPidorsFromGuild(server_id)
+//   for (key of pidors) {
+//     pidors[key].roles.remove(role)
+//   }
+//   await epicdb.pidor.deleteAllPidorsFromGuild(server_id)
 
-  // добавляем пидора и даём ему роль
-  const res = await epicdb.pidor.addPidorIfNotExist({server_id: serverId, user_id: userId})
-}
+//   // добавляем пидора и даём ему роль
+//   const res = await epicdb.pidor.addPidorIfNotExist({server_id: serverId, user_id: userId})
+// }
 
 function checkRole(msg) {
   if (msg.member.permissions.has(["ADMINISTRATOR"])) {

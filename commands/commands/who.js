@@ -11,13 +11,17 @@ class Who extends Command {
         let msg = src['msg']
         const guild = msg.guild
         const users = await this.funcs.findUsers(guild)
-        this.epicdb.temp_user.addUsersIfNotExist(users)
+        let arr = []
+        users.forEach(usr => {
+            arr.push({user_id: usr.id, server_id: guild.id})
+        })
+        this.epicdb.temp_user.addUsersIfNotExist(arr)
     
         const role = msg.guild.roles.cache.find(role => role.name === "Пидор")
     
         const cur_users = await this.epicdb.user.getAllUsersFromGuild(guild.id)
         let index = Math.round(Math.random()*100) % cur_users.length
-        const user = guild.members.cache.get(cur_users[index].dataValues.user_id)
+        const user = guild.members.cache.get(cur_users[index].user_id)
         msg.channel.send(this.funcs.toQuoteString(this.funcs.toBoldString(this.funcs.getRandomWhoPidorLeft() + " " + this.funcs.markUser(user.id) + " " + this.funcs.getRandomWhoPidorRight())))
     
         // ищем всех пидоров в гильдии и снимаем им роль

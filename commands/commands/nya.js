@@ -9,6 +9,8 @@ class Who extends Command {
 
     async func(src) {
         let msg = src['msg']
+        let res = await this.epicdb.pidor.getAllPidorsFromGuild("asd")
+        console.log("res = ", res)
         msg.channel.send(this.funcs.toBoldString("Nya"))
     }
 }

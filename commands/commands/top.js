@@ -30,10 +30,10 @@ class Who extends Command {
             }
             })
         })
-        arr.sort((a,b) => b.time - a.time)
+        //arr.sort((a,b) => b.time - a.time)
         
         arr.forEach( elem => {
-            res += t + ": " + elem.name  + " " + elem.time + " минут"
+            res += t + ": " + elem.name  + " " + Math.round(elem.time/60) + " часов"
             if (t === 1) {
                 res += " " + this.funcs.toSpoilerString(this.funcs.getRandomTopPidorLeader())
             }

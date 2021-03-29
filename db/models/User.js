@@ -44,18 +44,29 @@ const {DataTypes, Model} = require("sequelize")
         }
 
 
+        // Возвращает всех пользователей из гильдии
+        // Входные данные id(string) гильдии
+        // Выход [{}]
         async getAllUsersFromGuild(id) {
             try {
                 const a = await this.temp.findAll({where: {
                     server_id: id
                   }})
                 //console.log(a)
-                return a
+                let res = []
+                a.forEach(element => {
+                    res.push(element.dataValues)
+                })
+                return res
             } catch(e) {
-                console.log("err2")
+                console.error(e)
+                return []
             }
         }
 
+        // Обновляет время пидора
+        // Входные данные id_guild(string), user_id(string), time(Date)
+        // Выходные данные true, false
         async updateUserTime(server_id, user_id , hours) {
             try {
                 const a = await this.temp.update(
@@ -64,13 +75,19 @@ const {DataTypes, Model} = require("sequelize")
                     server_id: server_id,
                     user_id: user_id
                   }})
-                console.log(a)
-                return a
+                if (a[0] === 1) {
+                    return true
+                }
+                return false
             } catch(e) {
-                console.log("err6")
+                console.error(e)
+                return false
             }
         }
 
+        // Выводит топ 10 юзеров по времени пидораства
+        // Входные данные id(string) гильдии
+        // Выходные данные [{guild_id,user_id,hours,createdAt,updatedAt}]
         async getTopUsersFromGuild(id) {
             try {
                 const a = await this.temp.findAll(
@@ -78,10 +95,14 @@ const {DataTypes, Model} = require("sequelize")
                     limit: 10,
                     order: [['hours', 'DESC']]}
                 )
-                //console.log(a)
-                return a
+                let res = []
+                a.forEach(element => {
+                    res.push(element.dataValues)
+                })
+                return res
             } catch(e) {
-                console.log("err7",e)
+                console.error(e)
+                return []
             }
         }
     }

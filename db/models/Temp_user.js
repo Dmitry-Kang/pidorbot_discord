@@ -42,6 +42,9 @@ class Temp_user {
         this.temp = Temp
     }
 
+    // Добавляет новых пользователей, которых ещё нету в бд но есть в гильдии
+    // Входные данные [{server_id,user_id}]
+    // Выходные данные true,false
     async addUsersIfNotExist(users) {
         try {
             await this.temp.bulkCreate( users ).then(async ()=>  {
@@ -50,18 +53,21 @@ class Temp_user {
                     where: {},
                     truncate: true
                 })
-                console.log("res", JSON.stringify(res[0]))
+                // console.log("res", JSON.stringify(res[0]))
                 let arr = []
                 await res[0].forEach(item => {
                     arr.push(item.row)
                 })
-                console.log("arr ", arr.join(","))
-                await this.sequelize.query("INSERT INTO users (user_id, server_id) VALUES " + arr.join(","))
+                if (arr.length > 0) {
+                    await this.sequelize.query("INSERT INTO users (user_id, server_id) VALUES " + arr.join(","))
+                }
             })
+            return true
         } catch(e) {
-            console.log("err1", e)
+            console.error(e)
+            return false
         }
-        return true
+        
     }
 }
 
