@@ -136,6 +136,20 @@ const {DataTypes, Model} = require("sequelize")
                 return null
             }
         }
+
+        // Прибавляет количество выборки в пидоры юзера по гильдии и айди юзера
+        async incrPidorsCntToUser(guild_id, user_id) {
+            try {
+                const a = await this.temp.increment('pidor_voted_cnt', { by: 1, where: {server_id: guild_id, user_id: user_id} });
+                if (a[0][1] === 1) {
+                    return true
+                }
+                return false
+            } catch(e) {
+                console.error(e)
+                return false
+            }
+        }
     }
 
 module.exports = User

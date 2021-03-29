@@ -30,6 +30,7 @@ class Who extends Command {
     
         // добавляем пидора и даём ему роль
         const res = await this.epicdb.pidor.addPidorIfNotExist({server_id: guild.id, user_id: user.id})
+        await this.epicdb.user.incrPidorsCntToUser(guild.id, user.id)
         guild.members.cache.get(user.id).roles.add(role)
     }
 }
