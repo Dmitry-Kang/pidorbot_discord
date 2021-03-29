@@ -2,14 +2,17 @@ const Command = require('./command')
 
 // Проверка на админа
 
-class Who extends Command {
+class Vote extends Command {
     constructor() {
-        super("nya", "any")
+        super("vote", "any")
     }
 
     async func(src) {
         let msg = src['msg']
+        let args = src['args']
+        console.log("args ", args)
+
         msg.channel.send("!s")
     }
 }
-module.exports = new Who()
+module.exports = new Vote()

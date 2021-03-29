@@ -19,6 +19,21 @@ const {DataTypes, Model} = require("sequelize")
                     allowNull: false,
                     defaultValue: 0
                 },
+                lottery_tickets_cnt: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    defaultValue: 1
+                },
+                lottery_can_vote: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: true
+                },
+                pidor_voted_cnt: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    defaultValue: 0
+                },
                 createdAt: {
                     type: DataTypes.DATE,
                     defaultValue: sequelize.literal('NOW()')
