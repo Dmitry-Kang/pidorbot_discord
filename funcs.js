@@ -107,9 +107,19 @@ function getRandomNotAdmin() {
 function getRandomNotPidor() {
   return constants.notPidor[Math.round(Math.random()*(constants.notPidor.length-1))]
 }
+function getRandomLotterySelfVoting() {
+  return constants.lotterySelfVoting[Math.round(Math.random()*(constants.lotterySelfVoting.length-1))]
+}
+function getRandomLotteryCantVote() {
+  return constants.lotteryCantVote[Math.round(Math.random()*(constants.lotteryCantVote.length-1))]
+}
+function getRandomLoterySuccess() {
+  return constants.loterySuccess[Math.round(Math.random()*(constants.loterySuccess.length-1))]
+}
 
 
   module.exports = {findUsers, deleteAllPidors, uptatePidorTime,
                     toQuoteString, toSpoilerString, toCodeString, toBoldString,
                     getRandomWhoPidorLeft, getRandomWhoPidorRight, getRandomTopPidorTop, getRandomTopPidorLeader, getRandomWrongCommand,
-                    markUser, checkRole, getRandomNotAdmin, getRandomNotPidor}
+                    markUser, checkRole, getRandomNotAdmin, getRandomNotPidor, getRandomLotterySelfVoting,getRandomLotteryCantVote,
+                    getRandomLoterySuccess}

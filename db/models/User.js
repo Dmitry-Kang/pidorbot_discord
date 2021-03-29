@@ -140,11 +140,25 @@ const {DataTypes, Model} = require("sequelize")
         // Прибавляет количество выборки в пидоры юзера по гильдии и айди юзера
         async incrPidorsCntToUser(guild_id, user_id) {
             try {
-                const a = await this.temp.increment('pidor_voted_cnt', { by: 1, where: {server_id: guild_id, user_id: user_id} });
+                const a = await this.temp.increment('pidor_voted_cnt', { by: 1, where: {server_id: guild_id, user_id: user_id} })
                 if (a[0][1] === 1) {
                     return true
                 }
                 return false
+            } catch(e) {
+                console.error(e)
+                return false
+            }
+        }
+
+        // Даёт лотерейный билетик юзеру
+        async setLotteryTicket(guild_id, from_user_id, to_user_id) {
+            try {
+                await this.temp.increment('lottery_tickets_cnt', { by: 1, where: {server_id: guild_id, user_id: to_user_id} })
+                //await this.temp.increment('lottery_tickets_cnt', { by: -1, where: {server_id: guild_id, user_id: from_user_id} })
+                await this.sequelize.query("UPDATE users SET lottery_can_vote = false WHERE user_id = " + "'" + from_user_id + "'" + " and server_id = " + "'" +guild_id+ "'")
+                //await this.temp.increment('lottery_can_vote', { by: -1, where: {server_id: guild_id, user_id: from_user_id} })
+                return true
             } catch(e) {
                 console.error(e)
                 return false
