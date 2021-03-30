@@ -63,7 +63,6 @@ class Pidor {
     async addPidorIfNotExist(pidor) {
         try {
             const a = await this.temp.create( pidor )
-            // console.log("create pidor = ",a)
             return true
         } catch(e) {
             console.error(e)

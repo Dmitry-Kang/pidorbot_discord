@@ -34,6 +34,11 @@ const {DataTypes, Model} = require("sequelize")
                     allowNull: false,
                     defaultValue: 0
                 },
+                is_excepted: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false
+                },
                 createdAt: {
                     type: DataTypes.DATE,
                     defaultValue: sequelize.literal('NOW()')
@@ -65,9 +70,9 @@ const {DataTypes, Model} = require("sequelize")
         async getAllUsersFromGuild(id) {
             try {
                 const a = await this.temp.findAll({where: {
-                    server_id: id
+                    server_id: id,
+                    is_excepted: false
                   }})
-                //console.log(a)
                 let res = []
                 a.forEach(element => {
                     res.push(element.dataValues)
@@ -121,6 +126,27 @@ const {DataTypes, Model} = require("sequelize")
             }
         }
 
+        // Выводит топ 10 юзеров по количеству билетов
+        // Входные данные id(string) гильдии
+        // Выходные данные [{id,server_id,user_id,hours,createdAt,updatedAt,lottery_tickets_cnt,lottery_can_vote,pidor_voted_cnt}]
+        async getTopNextUsersFromGuild(id) {
+            try {
+                const a = await this.temp.findAll(
+                    {where: {server_id: id},
+                    limit: 10,
+                    order: [['lottery_tickets_cnt', 'DESC']]}
+                )
+                let res = []
+                a.forEach(element => {
+                    res.push(element.dataValues)
+                })
+                return res
+            } catch(e) {
+                console.error(e)
+                return []
+            }
+        }
+
         // Выводит юзера по гильдии и айди юзера
         async getUser(guild_id, user_id) {
             try {
@@ -155,9 +181,53 @@ const {DataTypes, Model} = require("sequelize")
         async setLotteryTicket(guild_id, from_user_id, to_user_id) {
             try {
                 await this.temp.increment('lottery_tickets_cnt', { by: 1, where: {server_id: guild_id, user_id: to_user_id} })
-                //await this.temp.increment('lottery_tickets_cnt', { by: -1, where: {server_id: guild_id, user_id: from_user_id} })
                 await this.sequelize.query("UPDATE users SET lottery_can_vote = false WHERE user_id = " + "'" + from_user_id + "'" + " and server_id = " + "'" +guild_id+ "'")
-                //await this.temp.increment('lottery_can_vote', { by: -1, where: {server_id: guild_id, user_id: from_user_id} })
+                return true
+            } catch(e) {
+                console.error(e)
+                return false
+            }
+        }
+
+        // Ставит 1 билет у победителя голосования, всем добавляет возможность голосовать
+        // Входные данные server_id(string), user_winner_id(string)
+        // Выходные данные true, false
+        async updateVotings(server_id, user_winner_id) {
+            try {
+                await this.temp.update(
+                    {lottery_tickets_cnt: 1},
+                    {where: {
+                    server_id: server_id,
+                    user_id: user_winner_id
+                  }})
+                  await this.temp.update(
+                    {lottery_can_vote: true},
+                    {where: {
+                    server_id: server_id
+                  }})
+                return true
+            } catch(e) {
+                console.error(e)
+                return false
+            }
+        }
+
+        // Убирает или добавляет возможность играть в пидора
+        // т.е. может стать пидором, отображается в списках и т.д
+        async setExcept(guild_id, user_id) {
+            try {
+                const a = await this.temp.findOne({
+                    where: {
+                        server_id: guild_id,
+                        user_id: user_id
+                    }
+                })
+                await this.temp.update(
+                    {is_excepted: !a.dataValues.is_excepted},
+                    {where: {
+                    server_id: guild_id,
+                    user_id: user_id
+                  }})
                 return true
             } catch(e) {
                 console.error(e)

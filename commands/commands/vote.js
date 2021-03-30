@@ -24,8 +24,8 @@ class Vote extends Command {
             msg.channel.send(this.funcs.toBoldString(this.funcs.getRandomLotterySelfVoting()))
             return
         }
-        let from_user = this.epicdb.user.getUser(msg.guild.id, from_id)
-        if (from_user.lottery_can_vote === undefined) {
+        let from_user = await this.epicdb.user.getUser(msg.guild.id, from_id)
+        if (from_user.lottery_can_vote === undefined || from_user.lottery_can_vote === false) {
             msg.channel.send(this.funcs.toBoldString(this.funcs.getRandomLotteryCantVote()))
             return
         }

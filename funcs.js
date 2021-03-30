@@ -19,11 +19,9 @@ async function findUsers(guild) {
 // Удаляет всех пидоров в данной гильдии
 async function deleteAllPidors(guild) {
   const role = guild.roles.cache.find(role => role.name === "Пидор")
-  //console.log("role", role)
   const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
   cur_users.forEach(user => {
     const usr = guild.members.cache.get(user.user_id)
-    //console.log("usr", usr)
     usr.roles.remove(role)
   })
   await epicdb.pidor.deleteAllPidorsFromGuild(guild.id)
@@ -32,10 +30,9 @@ async function deleteAllPidors(guild) {
 // обновляет время пидорам гильдии
 async function uptatePidorTime(guild) {
   const now = Date.now()
+  await epicdb.guild.updateLastVote(guild.id)
   const pidors = await epicdb.pidor.getAllPidorsFromGuild(guild.id)
   const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
-  // console.log("Pidors", pidors)
-  // console.log("cur users", JSON.stringify(cur_users))
 
   pidors.forEach(pidor => {
     cur_users.forEach(user => {
@@ -46,6 +43,31 @@ async function uptatePidorTime(guild) {
       }
     })
   })
+}
+
+// Проводит лотерею и назначает победителя
+// Выводит id юзера - победителя
+async function getLotteryVote(users) {
+  let max_tickets = 0
+  users.forEach(user => {
+    max_tickets += user.lottery_tickets_cnt
+  })
+  let index = Math.round(Math.random()*max_tickets)
+  let res_id = 0
+  for (let user in users) {
+    
+  }
+  let found = false
+  users.forEach(user => {
+    if (!found) {
+      index -= user.lottery_tickets_cnt
+      if (index <= 0) {
+        res_id = user.user_id
+        found = true
+      }
+    }
+  })
+  return res_id
 }
 
 // async function setPidor(serverId, userId, role) {
@@ -116,10 +138,13 @@ function getRandomLotteryCantVote() {
 function getRandomLoterySuccess() {
   return constants.loterySuccess[Math.round(Math.random()*(constants.loterySuccess.length-1))]
 }
+function getRandomSuccess() {
+  return constants.success[Math.round(Math.random()*(constants.success.length-1))]
+}
 
 
   module.exports = {findUsers, deleteAllPidors, uptatePidorTime,
                     toQuoteString, toSpoilerString, toCodeString, toBoldString,
                     getRandomWhoPidorLeft, getRandomWhoPidorRight, getRandomTopPidorTop, getRandomTopPidorLeader, getRandomWrongCommand,
-                    markUser, checkRole, getRandomNotAdmin, getRandomNotPidor, getRandomLotterySelfVoting,getRandomLotteryCantVote,
-                    getRandomLoterySuccess}
+                    markUser, checkRole, getRandomNotAdmin, getRandomNotPidor, getRandomLotterySelfVoting, getRandomLotteryCantVote,
+                    getRandomLoterySuccess, getLotteryVote, getRandomSuccess}
