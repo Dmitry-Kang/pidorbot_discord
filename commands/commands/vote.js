@@ -5,7 +5,7 @@ const Command = require('./command')
 
 class Vote extends Command {
     constructor() {
-        super("vote", "any")
+        super("vote", 0)
     }
 
     async func(src) {

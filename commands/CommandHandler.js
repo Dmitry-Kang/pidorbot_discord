@@ -26,12 +26,12 @@ class CommandHandler {
                 found = true
                 let user_role = funcs.checkRole(this.msg)
                 console.log("role = " + user_role)
-                if (handler.role != "any") {
-                    if (handler.role === "admin" && user_role != "admin") {
+                if (handler.role != 0 || (user_role < 2)) {
+                    if (handler.role > 2 && user_role < 3) {
                         msg.channel.send(funcs.toBoldString(funcs.getRandomNotAdmin()))
                         return
                     }
-                    if (handler['role'] === "pidor" && user_role === "user") {
+                    if (handler['role'] === 2 && user_role === 2) {
                         msg.channel.send(funcs.toBoldString(funcs.getRandomNotPidor()))
                         return
                     }

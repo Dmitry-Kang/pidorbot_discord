@@ -60,7 +60,10 @@ class Guild {
     async getGuild(guild_id) {
         try {
             let res = await this.temp.findOne({where: {server_id: guild_id}})
-            return res.dataValues
+            if (res) {
+                return res.dataValues
+            }
+            return null
         } catch(e) {
             console.error(e)
             return undefined

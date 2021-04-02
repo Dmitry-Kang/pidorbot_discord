@@ -4,7 +4,7 @@ const Command = require('./command')
 
 class Except extends Command {
     constructor() {
-        super("except", "admin")
+        super("except", 3)
     }
 
     async func(src) {

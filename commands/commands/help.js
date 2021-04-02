@@ -4,7 +4,7 @@ const Command = require('./command')
 
 class Help extends Command {
     constructor() {
-        super("help", "any")
+        super("help", 0)
     }
 
     async func(src) {

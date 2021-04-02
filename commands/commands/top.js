@@ -4,7 +4,7 @@ const Command = require('./command')
 
 class Who extends Command {
     constructor() {
-        super("top", "any")
+        super("top", 0)
     }
 
     async func(src) {

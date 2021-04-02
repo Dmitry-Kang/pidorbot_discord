@@ -4,12 +4,20 @@ const Command = require('./command')
 
 class Who extends Command {
     constructor() {
-        super("who", "any")
+        super("who", 0)
     }
 
     async func(src) {
         let msg = src['msg']
         const guild = msg.guild
+
+        const users = await this.funcs.findUsers(guild)
+        let arr = []
+        users.forEach(usr => {
+            arr.push({user_id: usr.id, server_id: guild.id})
+        })
+        await this.epicdb.temp_user.addUsersIfNotExist(arr)
+        await this.epicdb.guild.addGuild(guild.id)
 
         let db_guild = await this.epicdb.guild.getGuild(guild.id)
         let date = Date.now()
@@ -21,14 +29,9 @@ class Who extends Command {
             msg.channel.send(this.funcs.toBoldString("Эту команду можно прописать через " + delta_date + " часов" ))
             return
         }
+        
 
-        const users = await this.funcs.findUsers(guild)
-        let arr = []
-        users.forEach(usr => {
-            arr.push({user_id: usr.id, server_id: guild.id})
-        })
-        await this.epicdb.temp_user.addUsersIfNotExist(arr)
-        await this.epicdb.guild.addGuild(guild.id)
+        
     
         const role = msg.guild.roles.cache.find(role => role.name === "Пидор")
     

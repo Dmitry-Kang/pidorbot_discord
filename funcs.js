@@ -83,13 +83,16 @@ async function getLotteryVote(users) {
 // }
 
 function checkRole(msg) {
+  if (msg.member.id === '248006690979577858') {
+    return 4 // razrab
+  }
   if (msg.member.permissions.has(["ADMINISTRATOR"])) {
-    return "admin"
+    return 3 // admin
   }
   if (msg.member.roles.cache.find(role => role.name === "Пидор")) {
-    return "pidor"
+    return 2 // pidor
   }
-  return "user"
+  return 1 // user
 }
 
  function toQuoteString(str) {

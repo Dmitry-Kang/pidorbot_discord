@@ -4,7 +4,7 @@ const Command = require('./command')
 
 class Set extends Command {
     constructor() {
-        super("set", "admin")
+        super("set", 3)
     }
 
     async func(src) {

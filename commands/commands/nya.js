@@ -4,7 +4,7 @@ const Command = require('./command')
 
 class Nya extends Command {
     constructor() {
-        super("nya", "any")
+        super("nya", 0)
     }
 
     async func(src) {
