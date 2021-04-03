@@ -111,7 +111,7 @@ const {DataTypes, Model} = require("sequelize")
         async getTopUsersFromGuild(id) {
             try {
                 const a = await this.temp.findAll(
-                    {where: {server_id: id},
+                    {where: {server_id: id, is_excepted: false},
                     limit: 10,
                     order: [['hours', 'DESC']]}
                 )
@@ -132,7 +132,7 @@ const {DataTypes, Model} = require("sequelize")
         async getTopNextUsersFromGuild(id) {
             try {
                 const a = await this.temp.findAll(
-                    {where: {server_id: id},
+                    {where: {server_id: id, is_excepted: false},
                     limit: 10,
                     order: [['lottery_tickets_cnt', 'DESC']]}
                 )
