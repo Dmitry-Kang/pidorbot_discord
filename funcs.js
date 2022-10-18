@@ -18,12 +18,13 @@ async function findUsers(guild) {
 
 // Удаляет всех пидоров в данной гильдии
 async function deleteAllPidors(guild) {
-  const role = guild.roles.cache.find(role => role.name === "Пидор")
-  const cur_users = await epicdb.user.getAllUsersFromGuild(guild.id)
-  cur_users.forEach(user => {
-    const usr = guild.members.cache.get(user.user_id)
-    usr.roles.remove(role)
-  })
+  const role = await guild.roles.cache.find(r => r.name == 'Пидор');
+
+  all_users = await guild.members.fetch()
+  all_users = all_users.filter(r => !r.user.bot)
+  all_users.forEach((member, i) => { // Looping through the members of Role.
+      member.roles.remove(role); // Removing the Role.
+  });
   await epicdb.pidor.deleteAllPidorsFromGuild(guild.id)
 }
 
