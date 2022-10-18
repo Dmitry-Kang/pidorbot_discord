@@ -9,6 +9,10 @@
     "start": "node ./index.js",
     "deploy": "git push heroku master"
   },
+  "engines": {
+    "node": "16.16.0",
+    "npm": "8.11.0"
+  },
   "author": "Kang",
   "license": "ISC",
   "dependencies": {
